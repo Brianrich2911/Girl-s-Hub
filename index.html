@@ -18,24 +18,31 @@
     .overlay{position:fixed;inset:0;background:#24191a77;z-index:10;display:none}.overlay.show{display:block}.cart-panel{position:fixed;z-index:11;right:0;top:0;height:100dvh;width:min(440px,100%);background:#fff;box-shadow:-8px 0 30px #0002;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column}.cart-panel.show{transform:translateX(0)}
     .cart-head{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f1e7e6}.cart-head h2{margin:0;font:500 24px Georgia,serif}.close-cart{border:0;background:transparent;font-size:26px;cursor:pointer;color:var(--muted)}.cart-items{padding:12px 20px;overflow:auto;flex:1}.empty{padding:45px 10px;text-align:center;color:var(--muted)}
     .cart-item{display:grid;grid-template-columns:68px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid #f3ebea;align-items:center}.cart-item img{width:68px;height:68px;object-fit:cover;border-radius:10px;background:#f6eeee}.item-name{font-weight:600;font-size:14px}.item-price{color:var(--dark);font-size:13px;margin-top:5px}.qty{display:flex;align-items:center;gap:8px;margin-top:8px}.qty button{width:26px;height:26px;border:1px solid #ead8da;border-radius:50%;background:#fff;cursor:pointer}.remove{border:0;background:none;color:#a38b8e;text-decoration:underline;font-size:12px;cursor:pointer;margin-top:6px;padding:0}.line-total{font-weight:700;font-size:13px;white-space:nowrap}
-    .cart-footer{border-top:1px solid #f1e7e6;padding:18px 20px calc(18px + env(safe-area-inset-bottom))}.subtotal{display:flex;justify-content:space-between;font-size:17px;font-weight:700;margin-bottom:8px}.shipping-note{font-size:12px;color:var(--muted);margin-bottom:14px}.checkout{display:block;text-align:center;width:100%;border:0;border-radius:25px;padding:13px;background:#25a75a;color:#fff;font-size:15px;font-weight:bold;cursor:pointer}.checkout:disabled{background:#c9c4c4;cursor:not-allowed}.disclaimer{text-align:center;color:var(--muted);font-size:11px;margin-top:10px}
+    .cart-footer{border-top:1px solid #f1e7e6;padding:18px 20px calc(18px + env(safe-area-inset-bottom))}.subtotal{display:flex;justify-content:space-between;font-size:15px;margin-bottom:8px}.order-total{display:flex;justify-content:space-between;font-size:18px;font-weight:700;margin:12px 0}.shipping-note{font-size:12px;color:var(--muted);margin:8px 0 14px}.checkout{display:block;text-align:center;width:100%;border:0;border-radius:25px;padding:13px;background:#25a75a;color:#fff;font-size:15px;font-weight:bold;cursor:pointer}.checkout:disabled{background:#c9c4c4;cursor:not-allowed}.disclaimer{text-align:center;color:var(--muted);font-size:11px;margin-top:10px}
     @media(max-width:700px){.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.content{padding:12px}.content h3{font-size:15px}.content p{font-size:12px;min-height:56px}.row{align-items:stretch;flex-direction:column}.button{text-align:center}.note{display:none}}
   </style>
 </head>
 <body>
   <header><a class="brand" href="#">Girl’s</a><span class="note">甜甜日常 · 舒适自在</span><button class="cart-open" id="openCart" type="button">购物车 (<span id="cartCount">0</span>)</button></header>
-  <section class="hero"><small>GIRL’S EVERYDAY</small><h1>给日常一点可爱</h1><p>精选少女感日常内裤，简单、舒服，也可以很甜。</p><span class="tag">统一尺码 · RM9.90 / 件</span></section>
+  <section class="hero"><small>GIRL’S EVERYDAY</small><h1>给日常一点可爱</h1><p>精选少女感日常内裤，简单、舒服，也可以很甜。</p><span class="tag">统一尺码 · RM9.90 / 件 · 全马运费 RM10</span></section>
   <main>
     <div class="heading"><h2>本周精选</h2><p>喜欢哪一款？加入购物车后可一起通过 WhatsApp 下单</p></div>
     <section class="products" id="products"></section>
-    <div class="info"><strong>统一尺码 · RM9.90 每件</strong><br>西马统一运费 RM15 / 单。请通过 WhatsApp 确认颜色及库存；其他地区运费请另询。</div>
+    <div class="info"><strong>统一尺码 · RM9.90 每件</strong><br>全马统一运费 RM10 / 单。请通过 WhatsApp 联系我们确认库存及配送安排。</div>
   </main>
   <footer>© 2026 Girl’s · 商品颜色可能因拍摄光线略有差异</footer>
   <div class="overlay" id="overlay"></div>
   <aside class="cart-panel" id="cartPanel" aria-label="购物车" aria-hidden="true">
     <div class="cart-head"><h2>我的购物车</h2><button class="close-cart" id="closeCart" aria-label="关闭购物车" type="button">×</button></div>
     <div class="cart-items" id="cartItems"></div>
-    <div class="cart-footer"><div class="subtotal"><span>商品合计</span><span id="cartTotal">RM0.00</span></div><div class="subtotal"><span>西马运费</span><span id="shippingTotal">RM0.00</span></div><div class="subtotal"><span>订单总额</span><span id="orderTotal">RM0.00</span></div><div class="shipping-note">西马统一运费 RM15 / 单；其他地区运费请另询。</div><button class="checkout" id="checkout" type="button" disabled>通过 WhatsApp 提交订单</button><div class="disclaimer">点击后会打开 WhatsApp，请检查订单内容并发送。</div></div>
+    <div class="cart-footer">
+      <div class="subtotal"><span>商品合计</span><span id="cartSubtotal">RM0.00</span></div>
+      <div class="subtotal"><span>全马运费</span><span id="shippingTotal">RM0.00</span></div>
+      <div class="order-total"><span>订单总额</span><span id="orderTotal">RM0.00</span></div>
+      <div class="shipping-note">运费按每单 RM10 计算，适用于全马。</div>
+      <button class="checkout" id="checkout" type="button" disabled>通过 WhatsApp 提交订单</button>
+      <div class="disclaimer">点击后会打开 WhatsApp，请检查订单内容并发送。</div>
+    </div>
   </aside>
   <script>
     const whatsappNumber="601169819156";
@@ -47,7 +54,7 @@
       {id:"summer-sheer",name:"甜美夏薄款纯欲女款",description:"甜美轻薄的夏日款式，清新柔美，适合日常穿着。",image:"product-5.jpg.jpeg",alt:"甜美夏薄款女士内裤"},
       {id:"blue-sweet",name:"清新蓝系甜美内裤",description:"清新蓝色系设计，甜美清爽，适合日常穿着。",image:"product-6.jpg.jpeg",alt:"清新蓝系甜美女士内裤"}
     ];
-    const shippingFee=15,unitPrice=9.90,cartStorageKey="girls-shop-cart-v1";
+    const shippingFee=10,unitPrice=9.90,cartStorageKey="girls-shop-cart-v1";
     let cart={};try{cart=JSON.parse(localStorage.getItem(cartStorageKey)||"{}")}catch{cart={}}
     const productsElement=document.getElementById("products");
     productsElement.innerHTML=products.map(p=>`<article class="card"><img src="${p.image}" alt="${p.alt}" loading="lazy"><div class="content"><h3>${p.name}</h3><p>${p.description}</p><div class="row"><span class="price">RM9.90 / 件</span><button class="button add-to-cart" type="button" data-id="${p.id}">加入购物车</button></div></div></article>`).join("");
@@ -56,15 +63,19 @@
     function openCart(){overlay.classList.add("show");panel.classList.add("show");panel.setAttribute("aria-hidden","false");document.body.style.overflow="hidden"}
     function closeCart(){overlay.classList.remove("show");panel.classList.remove("show");panel.setAttribute("aria-hidden","true");document.body.style.overflow=""}
     function renderCart(){
-      const entries=products.filter(p=>(cart[p.id]||0)>0),count=entries.reduce((s,p)=>s+cart[p.id],0),total=count*unitPrice;
-      document.getElementById("shippingTotal").textContent=`RM${(count>0?shippingFee:0).toFixed(2)}`;document.getElementById("orderTotal").textContent=`RM${(total+(count>0?shippingFee:0)).toFixed(2)}`;document.getElementById("cartCount").textContent=count;document.getElementById("cartTotal").textContent=`RM${total.toFixed(2)}`;document.getElementById("checkout").disabled=count===0;
+      const entries=products.filter(p=>(cart[p.id]||0)>0),count=entries.reduce((s,p)=>s+cart[p.id],0),subtotal=count*unitPrice,shipping=count>0?shippingFee:0,total=subtotal+shipping;
+      document.getElementById("cartCount").textContent=count;
+      document.getElementById("cartSubtotal").textContent=`RM${subtotal.toFixed(2)}`;
+      document.getElementById("shippingTotal").textContent=`RM${shipping.toFixed(2)}`;
+      document.getElementById("orderTotal").textContent=`RM${total.toFixed(2)}`;
+      document.getElementById("checkout").disabled=count===0;
       const items=document.getElementById("cartItems");if(!entries.length){items.innerHTML='<div class="empty">购物车还是空的<br>挑选喜欢的商品加入吧 ♡</div>';return}
       items.innerHTML=entries.map(p=>`<div class="cart-item"><img src="${p.image}" alt="${p.alt}"><div><div class="item-name">${p.name}</div><div class="item-price">RM${unitPrice.toFixed(2)} / 件 · 统一尺码</div><div class="qty"><button type="button" data-action="minus" data-id="${p.id}" aria-label="减少数量">−</button><span>${cart[p.id]}</span><button type="button" data-action="plus" data-id="${p.id}" aria-label="增加数量">+</button></div><button class="remove" type="button" data-action="remove" data-id="${p.id}">移除</button></div><span class="line-total">RM${(cart[p.id]*unitPrice).toFixed(2)}</span></div>`).join("")
     }
     productsElement.addEventListener("click",e=>{const b=e.target.closest(".add-to-cart");if(!b)return;const id=b.dataset.id;cart[id]=(cart[id]||0)+1;saveCart();b.textContent="已加入 ✓";setTimeout(()=>b.textContent="加入购物车",900)});
     document.getElementById("cartItems").addEventListener("click",e=>{const b=e.target.closest("button[data-action]");if(!b)return;const{id,action}=b.dataset;if(action==="plus")cart[id]=(cart[id]||0)+1;else if(action==="minus"){cart[id]=(cart[id]||0)-1;if(cart[id]<=0)delete cart[id]}else if(action==="remove")delete cart[id];saveCart()});
     document.getElementById("openCart").addEventListener("click",openCart);document.getElementById("closeCart").addEventListener("click",closeCart);overlay.addEventListener("click",closeCart);document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCart()});
-    document.getElementById("checkout").addEventListener("click",()=>{const entries=products.filter(p=>(cart[p.id]||0)>0);if(!entries.length)return;const lines=entries.map(p=>`• ${p.name} × ${cart[p.id]} = RM${(cart[p.id]*unitPrice).toFixed(2)}`);const count=entries.reduce((s,p)=>s+cart[p.id],0);const message=`你好，我想下单：\n${lines.join("\n")}\n\n商品合计：RM${(count*unitPrice).toFixed(2)}\n西马运费：RM${shippingFee.toFixed(2)}\n订单总额（西马）：RM${(count*unitPrice+shippingFee).toFixed(2)}\n尺码：统一尺码\n请帮我确认库存及配送地区；其他地区运费请另询，谢谢。`;window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,"_blank","noopener")});
+    document.getElementById("checkout").addEventListener("click",()=>{const entries=products.filter(p=>(cart[p.id]||0)>0);if(!entries.length)return;const lines=entries.map(p=>`• ${p.name} × ${cart[p.id]} = RM${(cart[p.id]*unitPrice).toFixed(2)}`);const count=entries.reduce((s,p)=>s+cart[p.id],0),subtotal=count*unitPrice,total=subtotal+shippingFee;const message=`你好，我想下单：\n${lines.join("\n")}\n\n商品合计：RM${subtotal.toFixed(2)}\n全马运费：RM${shippingFee.toFixed(2)}\n订单总额：RM${total.toFixed(2)}\n尺码：统一尺码\n请帮我确认库存和付款方式，谢谢。`;window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,"_blank","noopener")});
     renderCart();
   </script>
 </body>
