@@ -8,28 +8,87 @@
   <style>
     :root{--pink:#d98f9d;--dark:#b96f7d;--cream:#fffaf7;--ink:#41383a;--muted:#857b7d}
     *{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--cream);font-family:Arial,"Noto Sans SC",sans-serif}
-    header{padding:18px 6%;display:flex;justify-content:space-between;align-items:center;background:#fff;border-bottom:1px solid #f4e7e6}
+    header{padding:16px 6%;display:flex;justify-content:space-between;align-items:center;background:#fff;border-bottom:1px solid #f4e7e6;position:sticky;top:0;z-index:5}
     .brand{color:var(--dark);font:700 27px Georgia,serif}.note{font-size:13px;color:var(--muted)}
+    .cart-open{border:0;border-radius:24px;padding:10px 15px;background:var(--pink);color:#fff;font-size:14px;font-weight:bold;cursor:pointer}.cart-open:hover,.button:hover{background:var(--dark)}
     .hero{text-align:center;padding:56px 18px;background:linear-gradient(135deg,#fff0f1,#fffaf7)}
     .hero small{color:var(--dark);letter-spacing:3px}.hero h1{font:500 clamp(32px,6vw,50px) Georgia,serif;margin:14px 0 10px}.hero p{color:var(--muted);line-height:1.8}.tag{display:inline-block;margin-top:12px;padding:9px 16px;border:1px solid #edc9ce;border-radius:30px;color:var(--dark)}
     main{width:min(1050px,92%);margin:42px auto 64px}.heading{text-align:center;margin-bottom:24px}.heading h2{font:500 30px Georgia,serif;margin:0 0 8px}.heading p{color:var(--muted);font-size:14px}
-    .products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.card{overflow:hidden;background:#fff;border:1px solid #f2e7e5;border-radius:16px;box-shadow:0 8px 24px #5a32350b}.card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#f6eeee}.content{padding:16px}.content h3{margin:0 0 8px;font-size:17px}.content p{min-height:42px;margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.6}.row{display:flex;align-items:center;justify-content:space-between;gap:8px}.price{color:var(--dark);font-size:21px;font-weight:bold;white-space:nowrap}.button{padding:11px 14px;border-radius:24px;background:var(--pink);color:#fff;font-size:13px;font-weight:bold;white-space:nowrap}.button:hover{background:var(--dark)}
+    .products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.card{overflow:hidden;background:#fff;border:1px solid #f2e7e5;border-radius:16px;box-shadow:0 8px 24px #5a32350b}.card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#f6eeee}.content{padding:16px}.content h3{margin:0 0 8px;font-size:17px}.content p{min-height:42px;margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.6}.row{display:flex;align-items:center;justify-content:space-between;gap:8px}.price{color:var(--dark);font-size:21px;font-weight:bold;white-space:nowrap}.button{border:0;padding:11px 14px;border-radius:24px;background:var(--pink);color:#fff;font-size:13px;font-weight:bold;white-space:nowrap;cursor:pointer}
     .info{margin-top:34px;padding:22px;border-radius:15px;background:#fff0f1;text-align:center;color:var(--muted);font-size:14px;line-height:1.8}.info strong{color:var(--ink)}footer{text-align:center;padding:22px;background:#fff;color:var(--muted);font-size:13px}
-    @media(max-width:700px){.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.content{padding:12px}.content h3{font-size:15px}.content p{font-size:12px;min-height:56px}.row{align-items:stretch;flex-direction:column}.button{text-align:center}}
+    .overlay{position:fixed;inset:0;background:#24191a77;z-index:10;display:none}.overlay.show{display:block}.cart-panel{position:fixed;z-index:11;right:0;top:0;height:100dvh;width:min(440px,100%);background:#fff;box-shadow:-8px 0 30px #0002;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column}.cart-panel.show{transform:translateX(0)}
+    .cart-head{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f1e7e6}.cart-head h2{margin:0;font:500 24px Georgia,serif}.close-cart{border:0;background:transparent;font-size:26px;cursor:pointer;color:var(--muted)}.cart-items{padding:12px 20px;overflow:auto;flex:1}.empty{padding:45px 10px;text-align:center;color:var(--muted)}
+    .cart-item{display:grid;grid-template-columns:68px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid #f3ebea;align-items:center}.cart-item img{width:68px;height:68px;object-fit:cover;border-radius:10px;background:#f6eeee}.item-name{font-weight:600;font-size:14px}.item-price{color:var(--dark);font-size:13px;margin-top:5px}.qty{display:flex;align-items:center;gap:8px;margin-top:8px}.qty button{width:26px;height:26px;border:1px solid #ead8da;border-radius:50%;background:#fff;cursor:pointer}.remove{border:0;background:none;color:#a38b8e;text-decoration:underline;font-size:12px;cursor:pointer;margin-top:6px;padding:0}.line-total{font-weight:700;font-size:13px;white-space:nowrap}
+    .cart-footer{border-top:1px solid #f1e7e6;padding:18px 20px calc(18px + env(safe-area-inset-bottom))}.subtotal{display:flex;justify-content:space-between;font-size:17px;font-weight:700;margin-bottom:8px}.shipping-note{font-size:12px;color:var(--muted);margin-bottom:14px}.checkout{display:block;text-align:center;text-decoration:none;width:100%;border:0;border-radius:25px;padding:13px;background:#25a75a;color:#fff;font-size:15px;font-weight:bold;cursor:pointer}.checkout:disabled{background:#c9c4c4;cursor:not-allowed}.disclaimer{text-align:center;color:var(--muted);font-size:11px;margin-top:10px}
+    @media(max-width:700px){.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.content{padding:12px}.content h3{font-size:15px}.content p{font-size:12px;min-height:56px}.row{align-items:stretch;flex-direction:column}.button{text-align:center}.note{display:none}}
   </style>
 </head>
 <body>
-  <header><a class="brand" href="#">Girl’s</a><span class="note">甜甜日常 · 舒适自在</span></header>
+  <header><a class="brand" href="#">Girl’s</a><span class="note">甜甜日常 · 舒适自在</span><button class="cart-open" id="openCart" type="button">购物车 (<span id="cartCount">0</span>)</button></header>
   <section class="hero"><small>GIRL’S EVERYDAY</small><h1>给日常一点可爱</h1><p>精选少女感日常内裤，简单、舒服，也可以很甜。</p><span class="tag">统一尺码 · RM9.90 / 件</span></section>
   <main>
-    <div class="heading"><h2>本周精选</h2><p>喜欢哪一款？点击按钮通过 WhatsApp 询问或下单</p></div>
-    <section class="products">
-      <article class="card"><img src="WhatsApp%20Image%202026-11-14%20at%201.07.14%20AM%20%281%29.jpeg" alt="灰色碎花女士内裤"><div class="content"><h3>日常碎花内裤</h3><p>灰色细碎花设计，柔和简约，适合日常穿着。</p><div class="row"><span class="price">RM9.90 / 件</span><a class="button" href="https://wa.me/601169819156?text=%E4%BD%A0%E5%A5%BD%EF%BC%8C%E6%88%91%E6%83%B3%E8%AF%A2%E9%97%AE%2F%E8%B4%AD%E4%B9%B0%EF%BC%9A%E6%97%A5%E5%B8%B8%E7%A2%8E%E8%8A%B1%E5%86%85%E8%A3%A4%EF%BC%88RM9.90%2F%E4%BB%B6%EF%BC%8C%E7%BB%9F%E4%B8%80%E5%B0%BA%E7%A0%81%EF%BC%89%E3%80%82" target="_blank" rel="noopener">WhatsApp 下单</a></div></div></article>
-      <article class="card"><img src="WhatsApp%20Image%202026-11-14%20at%201.07.14%20AM%20%282%29.jpeg" alt="黑色蕾丝蝴蝶结女士内裤"><div class="content"><h3>蝴蝶结蕾丝三角裤</h3><p>黑色蕾丝花边搭配小蝴蝶结，甜美可爱风格。</p><div class="row"><span class="price">RM9.90 / 件</span><a class="button" href="https://wa.me/601169819156?text=%E4%BD%A0%E5%A5%BD%EF%BC%8C%E6%88%91%E6%83%B3%E8%AF%A2%E9%97%AE%2F%E8%B4%AD%E4%B9%B0%EF%BC%9A%E8%9D%B4%E8%9D%B6%E7%BB%93%E8%95%BE%E4%B8%9D%E4%B8%89%E8%A7%92%E8%A3%A4%EF%BC%88RM9.90%2F%E4%BB%B6%EF%BC%8C%E7%BB%9F%E4%B8%80%E5%B0%BA%E7%A0%81%EF%BC%89%E3%80%82" target="_blank" rel="noopener">WhatsApp 下单</a></div></div></article>
-      <article class="card"><img src="WhatsApp%20Image%202026-11-14%20at%201.07.14%20AM.jpeg" alt="奶油白小花女士内裤"><div class="content"><h3>日系小花花边内裤</h3><p>奶油白底色搭配小花图案与花边，清新温柔。</p><div class="row"><span class="price">RM9.90 / 件</span><a class="button" href="https://wa.me/601169819156?text=%E4%BD%A0%E5%A5%BD%EF%BC%8C%E6%88%91%E6%83%B3%E8%AF%A2%E9%97%AE%2F%E8%B4%AD%E4%B9%B0%EF%BC%9A%E6%97%A5%E7%B3%BB%E5%B0%8F%E8%8A%B1%E8%8A%B1%E8%BE%B9%E5%86%85%E8%A3%A4%EF%BC%88RM9.90%2F%E4%BB%B6%EF%BC%8C%E7%BB%9F%E4%B8%80%E5%B0%BA%E7%A0%81%EF%BC%89%E3%80%82" target="_blank" rel="noopener">WhatsApp 下单</a></div></div></article>
-    </section>
+    <div class="heading"><h2>本周精选</h2><p>喜欢哪一款？加入购物车后可一起通过 WhatsApp 下单</p></div>
+    <section class="products" id="products"></section>
     <div class="info"><strong>统一尺码 · RM9.90 每件</strong><br>请通过 WhatsApp 联系我们确认颜色、库存及配送安排。</div>
   </main>
   <footer>© 2026 Girl’s · 商品颜色可能因拍摄光线略有差异</footer>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="cart-panel" id="cartPanel" aria-label="购物车" aria-hidden="true">
+    <div class="cart-head"><h2>我的购物车</h2><button class="close-cart" id="closeCart" aria-label="关闭购物车" type="button">×</button></div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer"><div class="subtotal"><span>商品合计</span><span id="cartTotal">RM0.00</span></div><div class="shipping-note">运费如有，将由店家通过 WhatsApp 与你确认。</div><button class="checkout" id="checkout" type="button" disabled>通过 WhatsApp 提交订单</button><div class="disclaimer">点击后会打开 WhatsApp，请检查订单内容并发送。</div></div>
+  </aside>
+
+  <script>
+    const whatsappNumber = "601169819156";
+    const products = [
+      {id:"flower-gray",name:"日常碎花内裤",description:"灰色细碎花设计，柔和简约，适合日常穿着。",image:"WhatsApp%20Image%202026-11-14%20at%201.07.14%20AM%20%281%29.jpeg",alt:"灰色碎花女士内裤"},
+      {id:"lace-black",name:"蝴蝶结蕾丝三角裤",description:"黑色蕾丝花边搭配小蝴蝶结，甜美可爱风格。",image:"WhatsApp%20Image%202026-11-14%20at%201.07.14%20AM%20%282%29.jpeg",alt:"黑色蕾丝蝴蝶结女士内裤"},
+      {id:"flower-cream",name:"日系小花花边内裤",description:"奶油白底色搭配小花图案与花边，清新温柔。",image:"WhatsApp%20Image%202026-11-14%20at%201.07.14%20AM.jpeg",alt:"奶油白小花女士内裤"}
+    ];
+    const unitPrice = 9.90;
+    const cartStorageKey = "girls-shop-cart-v1";
+    let cart = {};
+    try { cart = JSON.parse(localStorage.getItem(cartStorageKey) || "{}"); } catch { cart = {}; }
+
+    const productsElement = document.getElementById("products");
+    productsElement.innerHTML = products.map(product => `
+      <article class="card"><img src="${product.image}" alt="${product.alt}" loading="lazy"><div class="content"><h3>${product.name}</h3><p>${product.description}</p><div class="row"><span class="price">RM9.90 / 件</span><button class="button add-to-cart" type="button" data-id="${product.id}">加入购物车</button></div></div></article>
+    `).join("");
+
+    const overlay = document.getElementById("overlay");
+    const panel = document.getElementById("cartPanel");
+    function saveCart(){localStorage.setItem(cartStorageKey,JSON.stringify(cart));renderCart();}
+    function openCart(){overlay.classList.add("show");panel.classList.add("show");panel.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";}
+    function closeCart(){overlay.classList.remove("show");panel.classList.remove("show");panel.setAttribute("aria-hidden","true");document.body.style.overflow="";}
+    function renderCart(){
+      const entries=products.filter(p=>(cart[p.id]||0)>0);
+      const count=entries.reduce((sum,p)=>sum+cart[p.id],0);
+      const total=count*unitPrice;
+      document.getElementById("cartCount").textContent=count;
+      document.getElementById("cartTotal").textContent=`RM${total.toFixed(2)}`;
+      document.getElementById("checkout").disabled=count===0;
+      const items=document.getElementById("cartItems");
+      if(!entries.length){items.innerHTML='<div class="empty">购物车还是空的<br>挑选喜欢的商品加入吧 ♡</div>';return;}
+      items.innerHTML=entries.map(p=>`<div class="cart-item"><img src="${p.image}" alt="${p.alt}"><div><div class="item-name">${p.name}</div><div class="item-price">RM${unitPrice.toFixed(2)} / 件 · 统一尺码</div><div class="qty"><button type="button" data-action="minus" data-id="${p.id}" aria-label="减少数量">−</button><span>${cart[p.id]}</span><button type="button" data-action="plus" data-id="${p.id}" aria-label="增加数量">+</button></div><button class="remove" type="button" data-action="remove" data-id="${p.id}">移除</button></div><span class="line-total">RM${(cart[p.id]*unitPrice).toFixed(2)}</span></div>`).join("");
+    }
+    productsElement.addEventListener("click",event=>{const button=event.target.closest(".add-to-cart");if(!button)return;const id=button.dataset.id;cart[id]=(cart[id]||0)+1;saveCart();button.textContent="已加入 ✓";setTimeout(()=>button.textContent="加入购物车",900);});
+    document.getElementById("cartItems").addEventListener("click",event=>{const button=event.target.closest("button[data-action]");if(!button)return;const {id,action}=button.dataset;if(action==="plus")cart[id]=(cart[id]||0)+1;else if(action==="minus"){cart[id]=(cart[id]||0)-1;if(cart[id]<=0)delete cart[id];}else if(action==="remove")delete cart[id];saveCart();});
+    document.getElementById("openCart").addEventListener("click",openCart);
+    document.getElementById("closeCart").addEventListener("click",closeCart);
+    overlay.addEventListener("click",closeCart);
+    document.addEventListener("keydown",event=>{if(event.key==="Escape")closeCart();});
+    document.getElementById("checkout").addEventListener("click",()=>{
+      const entries=products.filter(p=>(cart[p.id]||0)>0);
+      if(!entries.length)return;
+      const lines=entries.map(p=>`• ${p.name} × ${cart[p.id]} = RM${(cart[p.id]*unitPrice).toFixed(2)}`);
+      const count=entries.reduce((sum,p)=>sum+cart[p.id],0);
+      const total=count*unitPrice;
+      const message=`你好，我想下单：\n${lines.join("\n")}\n\n商品合计：RM${total.toFixed(2)}\n尺码：统一尺码\n请帮我确认库存和运费，谢谢。`;
+      window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,"_blank","noopener");
+    });
+    renderCart();
+  </script>
 </body>
 </html>
