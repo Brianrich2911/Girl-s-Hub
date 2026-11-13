@@ -28,14 +28,14 @@
   <main>
     <div class="heading"><h2>本周精选</h2><p>喜欢哪一款？加入购物车后可一起通过 WhatsApp 下单</p></div>
     <section class="products" id="products"></section>
-    <div class="info"><strong>统一尺码 · RM9.90 每件</strong><br>请通过 WhatsApp 联系我们确认颜色、库存及配送安排。</div>
+    <div class="info"><strong>统一尺码 · RM9.90 每件</strong><br>西马统一运费 RM15 / 单。请通过 WhatsApp 确认颜色及库存；其他地区运费请另询。</div>
   </main>
   <footer>© 2026 Girl’s · 商品颜色可能因拍摄光线略有差异</footer>
   <div class="overlay" id="overlay"></div>
   <aside class="cart-panel" id="cartPanel" aria-label="购物车" aria-hidden="true">
     <div class="cart-head"><h2>我的购物车</h2><button class="close-cart" id="closeCart" aria-label="关闭购物车" type="button">×</button></div>
     <div class="cart-items" id="cartItems"></div>
-    <div class="cart-footer"><div class="subtotal"><span>商品合计</span><span id="cartTotal">RM0.00</span></div><div class="shipping-note">运费如有，将由店家通过 WhatsApp 与你确认。</div><button class="checkout" id="checkout" type="button" disabled>通过 WhatsApp 提交订单</button><div class="disclaimer">点击后会打开 WhatsApp，请检查订单内容并发送。</div></div>
+    <div class="cart-footer"><div class="subtotal"><span>商品合计</span><span id="cartTotal">RM0.00</span></div><div class="subtotal"><span>西马运费</span><span id="shippingTotal">RM0.00</span></div><div class="subtotal"><span>订单总额</span><span id="orderTotal">RM0.00</span></div><div class="shipping-note">西马统一运费 RM15 / 单；其他地区运费请另询。</div><button class="checkout" id="checkout" type="button" disabled>通过 WhatsApp 提交订单</button><div class="disclaimer">点击后会打开 WhatsApp，请检查订单内容并发送。</div></div>
   </aside>
   <script>
     const whatsappNumber="601169819156";
@@ -47,7 +47,7 @@
       {id:"summer-sheer",name:"甜美夏薄款纯欲女款",description:"甜美轻薄的夏日款式，清新柔美，适合日常穿着。",image:"product-5.jpg.jpeg",alt:"甜美夏薄款女士内裤"},
       {id:"blue-sweet",name:"清新蓝系甜美内裤",description:"清新蓝色系设计，甜美清爽，适合日常穿着。",image:"product-6.jpg.jpeg",alt:"清新蓝系甜美女士内裤"}
     ];
-    const unitPrice=9.90,cartStorageKey="girls-shop-cart-v1";
+    const shippingFee=15,unitPrice=9.90,cartStorageKey="girls-shop-cart-v1";
     let cart={};try{cart=JSON.parse(localStorage.getItem(cartStorageKey)||"{}")}catch{cart={}}
     const productsElement=document.getElementById("products");
     productsElement.innerHTML=products.map(p=>`<article class="card"><img src="${p.image}" alt="${p.alt}" loading="lazy"><div class="content"><h3>${p.name}</h3><p>${p.description}</p><div class="row"><span class="price">RM9.90 / 件</span><button class="button add-to-cart" type="button" data-id="${p.id}">加入购物车</button></div></div></article>`).join("");
@@ -57,14 +57,14 @@
     function closeCart(){overlay.classList.remove("show");panel.classList.remove("show");panel.setAttribute("aria-hidden","true");document.body.style.overflow=""}
     function renderCart(){
       const entries=products.filter(p=>(cart[p.id]||0)>0),count=entries.reduce((s,p)=>s+cart[p.id],0),total=count*unitPrice;
-      document.getElementById("cartCount").textContent=count;document.getElementById("cartTotal").textContent=`RM${total.toFixed(2)}`;document.getElementById("checkout").disabled=count===0;
+      document.getElementById("shippingTotal").textContent=`RM${(count>0?shippingFee:0).toFixed(2)}`;document.getElementById("orderTotal").textContent=`RM${(total+(count>0?shippingFee:0)).toFixed(2)}`;document.getElementById("cartCount").textContent=count;document.getElementById("cartTotal").textContent=`RM${total.toFixed(2)}`;document.getElementById("checkout").disabled=count===0;
       const items=document.getElementById("cartItems");if(!entries.length){items.innerHTML='<div class="empty">购物车还是空的<br>挑选喜欢的商品加入吧 ♡</div>';return}
       items.innerHTML=entries.map(p=>`<div class="cart-item"><img src="${p.image}" alt="${p.alt}"><div><div class="item-name">${p.name}</div><div class="item-price">RM${unitPrice.toFixed(2)} / 件 · 统一尺码</div><div class="qty"><button type="button" data-action="minus" data-id="${p.id}" aria-label="减少数量">−</button><span>${cart[p.id]}</span><button type="button" data-action="plus" data-id="${p.id}" aria-label="增加数量">+</button></div><button class="remove" type="button" data-action="remove" data-id="${p.id}">移除</button></div><span class="line-total">RM${(cart[p.id]*unitPrice).toFixed(2)}</span></div>`).join("")
     }
     productsElement.addEventListener("click",e=>{const b=e.target.closest(".add-to-cart");if(!b)return;const id=b.dataset.id;cart[id]=(cart[id]||0)+1;saveCart();b.textContent="已加入 ✓";setTimeout(()=>b.textContent="加入购物车",900)});
     document.getElementById("cartItems").addEventListener("click",e=>{const b=e.target.closest("button[data-action]");if(!b)return;const{id,action}=b.dataset;if(action==="plus")cart[id]=(cart[id]||0)+1;else if(action==="minus"){cart[id]=(cart[id]||0)-1;if(cart[id]<=0)delete cart[id]}else if(action==="remove")delete cart[id];saveCart()});
     document.getElementById("openCart").addEventListener("click",openCart);document.getElementById("closeCart").addEventListener("click",closeCart);overlay.addEventListener("click",closeCart);document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCart()});
-    document.getElementById("checkout").addEventListener("click",()=>{const entries=products.filter(p=>(cart[p.id]||0)>0);if(!entries.length)return;const lines=entries.map(p=>`• ${p.name} × ${cart[p.id]} = RM${(cart[p.id]*unitPrice).toFixed(2)}`);const count=entries.reduce((s,p)=>s+cart[p.id],0);const message=`你好，我想下单：\n${lines.join("\n")}\n\n商品合计：RM${(count*unitPrice).toFixed(2)}\n尺码：统一尺码\n请帮我确认库存和运费，谢谢。`;window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,"_blank","noopener")});
+    document.getElementById("checkout").addEventListener("click",()=>{const entries=products.filter(p=>(cart[p.id]||0)>0);if(!entries.length)return;const lines=entries.map(p=>`• ${p.name} × ${cart[p.id]} = RM${(cart[p.id]*unitPrice).toFixed(2)}`);const count=entries.reduce((s,p)=>s+cart[p.id],0);const message=`你好，我想下单：\n${lines.join("\n")}\n\n商品合计：RM${(count*unitPrice).toFixed(2)}\n西马运费：RM${shippingFee.toFixed(2)}\n订单总额（西马）：RM${(count*unitPrice+shippingFee).toFixed(2)}\n尺码：统一尺码\n请帮我确认库存及配送地区；其他地区运费请另询，谢谢。`;window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,"_blank","noopener")});
     renderCart();
   </script>
 </body>
